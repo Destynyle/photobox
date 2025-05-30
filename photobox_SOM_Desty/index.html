@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoBox - Galerie de photos | Desty SOM</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-sun"></i>
+        <span>Changer de thème</span>
+    </button>
+
+    <main>
+        <h1>PhotoBox</h1>
+        <p class="author">Par Desty SOM</p>
+
+        <section id="gallery-controls">
+            <button id="load-gallery">Charger la galerie</button>
+            <div class="navigation">
+                <button id="first-page">Première page</button>
+                <button id="prev-page">Précédent</button>
+                <button id="next-page">Suivant</button>
+                <button id="last-page">Dernière page</button>
+            </div>
+        </section>
+
+        <section id="gallery" class="photo-gallery">
+            <!-- Les vignettes seront insérées ici -->
+        </section>
+
+        <section id="photo" class="photo-detail" style="display: none;">
+            <div id="la_photo">
+                <!-- La photo sera insérée ici -->
+            </div>
+
+            <div id="la_categorie">
+                <!-- La catégorie sera insérée ici -->
+            </div>
+
+            <section>
+                <h2>Commentaires</h2>
+                <ul id="les_commentaires">
+                    <!-- Les commentaires seront insérés ici -->
+                </ul>
+            </section>
+        </section>
+
+        <footer class="copyright">
+            <p>&copy; 2024 PhotoBox - Créé par Desty SOM. Tous droits réservés.</p>
+        </footer>
+    </main>
+
+    <script type="module" src="index.js"></script>
+</body>
+</html>

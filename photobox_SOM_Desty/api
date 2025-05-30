@@ -1,0 +1,546 @@
+Phox : l'api des photos
+api pour le parcours et l'accès à des galeries de photos
+Categories
+Categories | 1. liste des catégories
+Accès à la liste des catégories permet d'accéder à la représentation de la liste des catégories de photos Retourne une représentation json de la liste, incluant un tableau de catégories Chaque catégorie est décrite par son nom et sa description.
+
+Le résultat inclut un lien pour accéder à la liste des photos de cette catégorie.
+
+get
+/api/categories
+Succès : 200
+Champ	Type	Description
+type	String	
+type de la réponse : collection
+
+count	Number	
+nombre d'éléments dans la collection retournée
+
+categories	Array	
+le tableau de categories
+
+  categorie	Object	
+une ressource catégorie
+
+    id	Number	
+identifiant de la catégorie
+
+    nom	String	
+Nom de la catégorie
+
+    descr	String	
+Description de la catégorie
+
+  links	Object	
+liens concernant la catégorie
+
+    photos	Link	
+lien vers la liste de photos de la catégorie
+
+exemple de réponse en cas de succès
+   HTTP/1.1 200 OK
+
+ {
+    "type": "collection",
+    "count": 2,
+    "categories": [
+            { 
+                "categorie": {
+                         "id": 5,
+                        "nom": "chats",
+                      "descr": "des photos de chats, quoi"
+                },
+                "links": {
+                    "photos": { "href": "/api/categories/5/photos" }
+                }
+            },
+            {
+                "categorie": {
+                        "id": 4,
+                        "nom": "nature",
+                      "descr": "la nature sous tous les angles"
+                },
+                "links": {
+                    "photos": { "href": "/api/categories/4/photos" }
+                }
+            }
+    ]
+}
+Categories | 2. liste paginée des photos d'une catégorie
+Accès à une liste de photos d'une catégorie donnée - permet d'accéder à la liste des photos d'une catégorie. Retourne une représentation json contenant un tableau de photos. Chaque photo est décrite par son titre, le nom du fichier, une url vers la photo en petit et grand format. Chaque photo inclut un lien pour accéder à la ressource photo correspondante.
+
+Le résultat est paginé et inclut des liens de pagination pour parcourir la liste.
+
+get
+/api/categories/{id}/photos
+Paramètre
+Champ	Type	Description
+id	Number	
+Identifiant unique de la catégorie
+
+Succès : 200
+Champ	Type	Description
+type	String	
+type de la réponse : collection
+
+count	Number	
+nombre total d'éléments dans la collection
+
+size	Number	
+nombre d'éléments dans la réponse (pagination)
+
+photos	Array	
+tableau des photos de la catégories
+
+  photo	Object	
+la description d'une ressource photo
+
+    id	Number	
+identifiant de la photo
+
+    titre	String	
+Titre de la photo
+
+    file	String	
+nom de fichier de la photo
+
+    thumbnail	Url	
+url de la photo, version vignette
+
+    original	Url	
+url de la photo, version originale
+
+  links	Object	
+liens associés à la photo
+
+    self	Url	
+lien vers la ressource photo correspondante, permet d'obtenir une description complète
+
+links	Object	
+liens de pagination dans la liste de photos
+
+  first	Uri	
+uri de la 1ère page de la liste
+
+  last	Uri	
+uri de la dernière page de la liste
+
+  next	Uri	
+uri de la page suivante de la liste
+
+  prev	Uri	
+uri de la page précédente de la liste
+
+exemple de réponse en cas de succès
+   HTTP/1.1 200 OK
+   {
+     "type": "collection",
+     "count": 24,
+     "size": 10,
+     "photos" : [
+      {
+        "photo": {
+             "id": 38,
+             "titre": "hall-1929422_1920",
+             "file": "img_586d389c6c4ae.jpg",
+             "thumbnail": {
+                 "href": "/img/small/img_586d389c6c4ae.jpg"
+             },
+               "original": {
+                "href": "/img/large/img_586d389c6c4ae.jpg"
+             }
+        },
+        "links": {
+            "self": {
+                 "href": "/api/photos/38"
+            }
+        }
+      },
+     {
+        "photo": {
+            "id": 37,
+             "titre": "graffiti-966463_1920",
+            "file": "img_586d389c153b2.jpg",
+            "thumbnail": {
+                "href": "/img/small/img_586d389c153b2.jpg"
+            },
+            "original": {
+                "href": "/img/large/img_586d389c153b2.jpg"
+            }
+        },
+        "links": {
+            "self": {
+                "href": "/api/photos/37"
+            }
+        }
+    }
+   ],
+   "links": {
+        "first": {
+                 "href": "/api/categories/2/photos?offset=0&size=10"
+            },
+        "prev": {
+                "href": "/api/categories/2/photos?offset=0&size=10"
+            },
+        "next": {
+                "href": "/api/categories/2/photos?offset=10&size=10"
+        },
+        "last": {
+                "href": "/api/categories/2/photos?offset=20&size=7"
+        }
+   }
+}
+Erreur : 404
+Nom	Description
+CategorieNotFound	
+Categorie inexistante
+
+exemple de réponse en cas d'erreur
+HTTP/1.1 404 Not Found
+
+{
+  "type": "error",
+  "error": 404,
+  "message": "catégorie 25 inexistante"
+}
+Photos
+Photos | 1. liste paginée des photos
+Accès la liste de photos permet d'accéder à la liste des photos. Retourne une représentation json contenant un tableau de photos. Chaque photo est décrite par son titre, le nom du fichier, une url vers la photo en petit et grand format. Chaque photo inclut un lien pour accéder à la ressource photo correspondante.
+
+Le résultat inclut des liens de pagination pour parcourir le résultat.
+
+get
+/api/photos[/?page=p&size=s]
+Paramètre
+Champ	Type	Description
+page	Number	
+(optionnel) n° de page dans la liste des photos, 1 si absent
+
+size	Number	
+(optionnel) nombre de photos par page dans la réponse, 10 si absent
+
+Succès : 200
+Champ	Type	Description
+Photos	Array	
+tableau des photos
+
+  photo	Object	
+la description d'une ressource photo
+
+    id	Number	
+identifiant de la photo
+
+    titre	String	
+Titre de la photo
+
+    file	String	
+nom de fichier de la photo
+
+    thumbnail	Url	
+url de la photo, version vignette
+
+    original	Url	
+url de la photo, version originale
+
+    self	Url	
+URI de la ressource photo
+
+links	Object	
+liens de pagination dans la liste de photos
+
+  first	Uri	
+uri de la 1ère page de la liste
+
+  last	Uri	
+uri de la dernière page de la liste
+
+  next	Uri	
+uri de la page suivante de la liste
+
+  prev	Uri	
+uri de la page précédente de la liste
+
+exemple de réponse en cas de succès
+   HTTP/1.1 200 OK
+   {
+     "photos" : [
+      {
+        "photo": {
+             "id": 38,
+             "titre": "hall-1929422_1920",
+             "file": "img_586d389c6c4ae.jpg",
+             "thumbnail": { "href": "/img/small/img_586d389c6c4ae.jpg" },
+             "original": { "href": "/img/large/img_586d389c6c4ae.jpg" }
+        },
+        "links": {
+            "self": { "href": "/api/photos/38" }
+        }
+      },
+     {
+        "photo": {
+            "id": 37,
+             "titre": "graffiti-966463_1920",
+            "file": "img_586d389c153b2.jpg",
+            "thumbnail": { "href": "/phox/img/small/img_586d389c153b2.jpg" },
+            "original": { "href": "/phox/img/large/img_586d389c153b2.jpg" }
+        },
+        "links": {
+            "self": { "href": "/api/photos/37" }
+        }
+    }
+   ],
+   "links": {
+        "first": {
+                 "href": "/api/photos/?page=1&size=10"
+            },
+        "prev": {
+                "href": "/api/photos/?page=1&size=10"
+            },
+        "next": {
+                "href": "/api/photos/?page=3&size=10"
+        },
+        "last": {
+                "href":"/api/photos/?page=11&size=3"
+        }
+   }
+}
+Photos | 2. détail d'une photo
+accès aux informations détaillées concernant une photo Retourne une représentation json d'une photos. Laphoto est décrite par son titre, le nom du fichier, une description et des informations sur l'image ; une url vers l'image originale en formùat jpeg est incluse
+
+Le résultat inclut des liens pour accéder à la catégorie de l'image et aux commentaires associés à la photo.
+
+get
+/api/photos/{id}/
+Paramètre
+Champ	Type	Description
+id	Number	
+Identifiant unique de la photo
+
+Succès : 200
+Champ	Type	Description
+photo	Object	
+la description d'une ressource photo
+
+  id	Number	
+identifiant de la photo
+
+  titre	String	
+Titre de la photo
+
+  descr	String	
+description de la photo
+
+  file	String	
+nom de fichier de la photo
+
+  format	String	
+format de la photo (type MIME)
+
+  size	Number	
+taille de la photo (octets)
+
+  width	Number	
+largeur de la photo (pixels)
+
+  height	Number	
+hauteur de la photo (pixels)
+
+  url	Url	
+url de la photo, version originale
+
+links	Object	
+liens assoxiés à la photo
+
+  categorie	Uri	
+lien vers la catégorie de la photo
+
+  comments	Uri	
+lien vers les commentaires de la photo
+
+exemple de réponse en cas de succès
+HTTP/1.1 200 OK
+   {
+     "photo": {
+          "id": 38,
+          "titre": "hall-1929422_1920",
+          "file": "img_586d389c6c4ae.jpg",
+          "descr": "Dolor odio consequatur expedita. Iusto sit molestiae accusantium delectus. Earum voluptatibus voluptate officiis id exercitationem. Quia temporibus asperiores enim optio quae.",
+          "format": "JPEG",
+          "type": "image/jpeg",
+          "size": 152178,
+          "width": 1280,
+           "height": 720,
+           "url": {
+             "href": "/img/large/img_586d389c6c4ae.jpg"
+           }
+     },
+     "links": {
+         "categorie": {
+            "href": "/api/photos/10/categorie"
+         },
+        "comments": {
+            "href": "/api/photos/10/comments"
+        }
+     }
+   }
+Erreur : 404
+Nom	Description
+PhotoNotFound	
+Photo inexistante
+
+exemple de réponse en cas d'erreur
+   HTTP/1.1 404 Not Found
+
+   {
+      "type": "error",
+      "code": 404,
+      "message": "ressource photo 1234 inconnue",
+      "description": "The requested resource could not be found. Please verify the URI and try again."
+}
+Photos | 3. liste des commentaires pour une photo
+accès aux commentaires concernant une photo. La requête retourne une représentation json de la liste des commentaires concernant la photo ; Chaque commentaire est décrit par un titre, un contenu, le pseudo de l'auteur et une date d'ajout
+
+get
+/api/photos/id/comments
+Paramètre
+Champ	Type	Description
+id	Number	
+Identifiant unique de la photo
+
+Succès : 200
+Champ	Type	Description
+type	String	
+le type de réponse - collection
+
+nombre	number	
+d'éléments dans la collection
+
+comments	Array	
+le tableau de commentaire
+
+  titre	String	
+Titre du commentaire
+
+  content	String	
+contenu du commentaire
+
+  pseudo	String	
+pseudo de l'auteur du commentaire
+
+  created_at	String	
+e date d'ajout du commentaire
+
+exemple de réponse en cas de succès
+   HTTP/1.1 200 OK
+{
+    "type" : "collection",
+    "count" : 2,
+    "comments": [
+        {
+            "id": 37,
+            "titre": "Facilis corporis harum itaque impedit iste.",
+            "pseudo": "margaux57",
+            "content": "Velit et vitae sint similique aut quia placeat. Blanditiis ut soluta quis magni animi. Nisi unde laboriosam vel quis non quo beatae.\nSunt iure est minima et totam sint eum. Pariatur quod officia sint voluptas non. Dolores laudantium temporibus velit dolorem sit. Aut omnis repellat at velit.",
+            "created_at": "30/11/2016"
+        },
+        {
+            "id": 35,
+            "titre": "Incidunt excepturi modi et commodi sed deserunt.",
+            "pseudo": "bonnin.elise",
+            "content": "Possimus nulla architecto fugit recusandae quo facilis tempora. Sed voluptate dicta et officia.\nVitae numquam omnis ut voluptas aut et consequatur illo. Asperiores nulla fugiat quia vero enim et quia. Esse quia voluptas numquam sunt et. Voluptatem necessitatibus qui consequatur dolorem.",
+            "created_at": "13/09/2016"
+        }
+    ]
+}
+Erreur : 404
+Nom	Description
+PhotoNotFound	
+Photo inexistante
+
+exemple de réponse en cas d'erreur
+ HTTP/1.1 404 Not Found
+
+ {
+    "type": "error",
+    "code": 404,
+    "message": "ressource photo 1234 inconnue",
+    "description" : "The requested resource could not be found. Please verify the URI and try again."
+}
+Photos | 4. ajout de commentaire pour une photo
+ajout d'un commentaire concernant une photo Les données relative au nouveau commentaire sont transmises en JSON dans le body de la requête
+
+post
+/api/photos/id/comments
+Exemple de requête :
+POST /photos/106/comments HTTP/1.1
+Host: webetu.iutnc.univ-lorraine.fr
+Content-Type: application/json;charset=utf8
+
+{
+   "titre"       : "sed fluctuat",
+   "content"     : "nec mergitur, et laudade cum honoris causae, sinse, milia",
+   "pseudo"      : "albert"
+ }
+Paramètre
+Champ	Type	Description
+id	Number	
+Identifiant unique de la photo
+
+pseudo	String	
+pseudo du visiteur ajoutant le commentaire
+
+titre	String	
+titre du commentaire
+
+content	Number	
+contenu du commentaire
+
+exemple de paramètres
+{
+  "titre"       : "sed fluctuat",
+  "content"     : "nec mergitur, et laudade cum honoris causae, sinse, milia",
+  "pseudo"      : "albert"
+}
+Succès : 201
+Champ	Type	Description
+comment	Object	
+une ressource commentaire
+
+  titre	String	
+Titre du commentaire
+
+  content	String	
+contenu du commentaire
+
+  pseudo	String	
+pseudo de l'auteur du commentaire
+
+  created_at	String	
+date d'ajout du commentaire
+
+exemple de réponse en cas de succès
+HTTP/1.1 201 CREATED
+
+{
+    "comment": {
+            "id": 37,
+            "titre": "Facilis corporis harum itaque impedit iste.",
+            "pseudo": "margaux57",
+            "content": "Velit et vitae sint similique aut quia placeat. Blanditiis ut soluta quis magni animi. Nisi unde laboriosam vel quis non quo beatae.\nSunt iure est minima et totam sint eum. Pariatur quod officia sint voluptas non. Dolores laudantium temporibus velit dolorem sit. Aut omnis repellat at velit.",
+            "created_at": "30/11/2016"
+        }
+}
+Erreur : 404
+Nom	Description
+PhotoNotFound	
+Photo inexistante
+
+exemple de réponse en cas d'erreur
+ HTTP/1.1 404 Not Found
+
+ {
+    "type": "error",
+    "code": 404,
+    "message": "ressource photo 1234 inconnue",
+    "description" : "The requested resource could not be found. Please verify the URI and try again."
+}
