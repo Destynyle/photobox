@@ -83,7 +83,7 @@ PhotoBox est une application web de galerie photos qui utilise l'API REST de l'I
 
 ## Installation et Utilisation
 
-1. Cloner le repository 
+1. Cloner le repository https://github.com/Destynyle/photobox/tree/main
 2. S'assurer d'avoir une connexion à l'API de l'IUT (VPN @etu ou credentials)
 3. Ouvrir le fichier `index.html` dans un navigateur
 
